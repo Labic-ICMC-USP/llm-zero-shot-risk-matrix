@@ -1,0 +1,40 @@
+# Source-specific configuration for saferproducts.gov (CPSC) incident reports.
+# Used by src/preprocessing/clean_incidents.py and map_severity.py.
+# prompt_intro/severity_levels are used by src/risk_scorer/risk_scorer.py.
+
+raw_file: IncidentReports.csv
+encoding: latin1
+skiprows: 1
+
+columns_keep:
+  - "Report No."
+  - "Product Category"
+  - "Incident Description"
+  - "(Primary) Victim Severity"
+
+columns_rename:
+  "Report No.": report_id
+  "Product Category": product_category
+  "Incident Description": incident_description
+  "(Primary) Victim Severity": victim_severity
+
+injury_keyword: "Injury"
+
+severity_map:
+  "No Incident, No Injury": 1
+  "Incident, No Injury": 2
+  "Injury": 3
+  "Death": 4
+
+prompt_intro: "You are a risk analyst that scores incidents for a risk matrix used in operational governance."
+
+severity_levels:
+  1: "No Incident, No Injury"
+  2: "Incident, No Injury"
+  3: "Injury"
+  4: "Death"
+
+# Used by src/evaluation/evaluate.py to compare the LLM's predictions
+# against real labels instead of another model's run.
+ground_truth_columns:
+  severity: victim_severity

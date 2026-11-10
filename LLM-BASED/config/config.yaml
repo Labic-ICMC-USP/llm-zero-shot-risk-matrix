@@ -1,0 +1,23 @@
+# LLM settings
+api_key: "YOUR_API_KEY"
+api_host: "https://openrouter.ai/api/v1"
+model_name: "deepseek/deepseek-chat-v3-0324"
+temperature: 0.0
+
+# Data
+source: "saferproducts_gov"
+input_path: "data/processed/saferproducts_gov/yard_and_garden.parquet"
+output_path: "results/saferproducts_gov/deepseek-chat-v3-0324/yard_and_garden_scored.csv"
+incident_text_column: "incident_description"
+severity_level_column: "victim_severity"
+
+# Behavior
+batch_size: 20
+strict_schema: true
+return_used_tokens: false
+reference_mode: false
+predict_likelihood: true   # false = severity + justification only (likelihood from another method, e.g. ../graph_likelihood/)
+
+# Retry behavior
+max_retries: 5
+retry_base_delay: 1.0

@@ -1,0 +1,21 @@
+# Environments and caches
+.venv/
+.env
+.pytest_cache/
+__pycache__/
+*.pyc
+*.egg-info/
+.ipynb_checkpoints/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+*.log
+
+# Raw/interim/processed data: large, obtained from SaferProducts.gov (see README)
+data/
+
+# Derived from the scored CSVs by evaluate.py/visualize.py -- no LLM calls,
+# cheap to regenerate (see README), not versioned.
+LLM-BASED/results/*/*/evaluations/
+LLM-BASED/results/*/comparisons/

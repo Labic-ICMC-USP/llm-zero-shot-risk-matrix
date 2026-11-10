@@ -1,0 +1,16 @@
+category,n,n_splits,f1_macro
+baby,3703,5,0.6960029180495362
+clothing_and_accessories,1812,1,
+containers_and_packaging,949,2,0.5250008937352897
+drywall,64,4,0.21975893241498062
+electronics,4685,5,0.5208541211081432
+"fuel,_lighters_and_fireworks",500,3,0.37096684776582767
+"furniture,_furnishings_and_decorations",5402,5,0.6737804580856681
+hobby,356,1,
+home_maintenance_and_structures,10427,5,0.5729963126658324
+kitchen,22700,5,0.41191108162615575
+personal_care,1029,5,0.3726777215550795
+products_at_public_facilities,90,1,
+sports_and_recreation,3915,5,0.6197620495530185
+toys_and_children,3166,5,0.4599508295665937
+yard_and_garden,3190,5,0.56879042998657
