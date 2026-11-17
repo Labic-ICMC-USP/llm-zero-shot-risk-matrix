@@ -6,6 +6,13 @@ class_weight="balanced" to account for severity class imbalance. The
 vectorizer is refit on each fold's training split only, to avoid leaking
 test-fold vocabulary into training.
 
+F1(macro) is computed once per category on the pooled out-of-fold
+predictions (every instance predicted exactly once), not as the mean of
+per-fold F1s: averaging per-fold F1 is biased under class imbalance and
+small folds (Forman & Scholz, 2010), and pooling matches how the LLMs and
+the paired bootstrap (LLM-BASED/experiments/run_significance_baseline.py)
+compute it.
+
 Same conventions as ../majority_class/run.py -- reads ground truth from
 LLM-BASED's already-scored results via a relative path (no package import).
 See ../README.md.
@@ -49,7 +56,6 @@ def evaluate_category(df: pd.DataFrame) -> tuple[float, int, pd.DataFrame | None
         return float("nan"), n_splits, None
 
     skf = StratifiedKFold(n_splits=n_splits, shuffle=True, random_state=SEED)
-    fold_f1s = []
     oof_report_ids, oof_true, oof_pred = [], [], []
     for train_idx, test_idx in skf.split(X_text, y):
         vectorizer, clf = make_pipeline_pieces()
@@ -57,11 +63,6 @@ def evaluate_category(df: pd.DataFrame) -> tuple[float, int, pd.DataFrame | None
         X_test = vectorizer.transform(X_text.iloc[test_idx])
         clf.fit(X_train, y[train_idx])
         y_pred = clf.predict(X_test)
-
-        report = classification_report(
-            y[test_idx], y_pred, output_dict=True, zero_division=0, labels=SEVERITY_LEVELS
-        )
-        fold_f1s.append(report["macro avg"]["f1-score"])
 
         # Out-of-fold predictions: each instance is predicted exactly once,
         # by a model that never saw it during training -- needed for the
@@ -73,7 +74,11 @@ def evaluate_category(df: pd.DataFrame) -> tuple[float, int, pd.DataFrame | None
     oof_df = pd.DataFrame(
         {"report_id": oof_report_ids, "victim_severity": oof_true, "pred_tfidf": oof_pred}
     )
-    return float(np.mean(fold_f1s)), n_splits, oof_df
+    report = classification_report(
+        oof_df["victim_severity"], oof_df["pred_tfidf"],
+        output_dict=True, zero_division=0, labels=SEVERITY_LEVELS,
+    )
+    return float(report["macro avg"]["f1-score"]), n_splits, oof_df
 
 
 def main() -> None:
